@@ -6,10 +6,18 @@ Created Date: 02/18/20
 """
 import subprocess
 import pefile
+import os
 
 
 def scanner():
-    print("A stub function for the scanner")
+    """
+    The scanner function used to scan directory of files
+    """
+    path = input('Path to PE File Directory: ')
+    for filename in os.listdir(path):
+        print(filename)
+        pe = pefile.PE(filename)
+        print(pe)
     pass
 
 
