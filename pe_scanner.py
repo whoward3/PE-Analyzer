@@ -6,6 +6,7 @@ Created Date: 02/18/20
 """
 import subprocess
 import pefile
+import peutils
 import os
 
 
@@ -15,9 +16,20 @@ def scanner():
     """
     path = input('Path to PE File Directory: ')
     for filename in os.listdir(path):
-        print(filename)
-        pe = pefile.PE(filename)
-        print(pe)
+        print("\n {} : \r".format(filename))
+        try:
+            pe = pefile.PE(path+filename)
+            print("PASS\n")
+            print(pe)
+        except Exception:
+            print("FAILED")
+
+
+def reporter(pe):
+    """
+    The reporter function that will return a report including a reference to virus total via:
+    https://www.virustotal.com/gui/search/{HASH}
+    """
     pass
 
 
