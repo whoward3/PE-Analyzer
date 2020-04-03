@@ -8,6 +8,7 @@ import subprocess
 import pefile
 import peutils
 import os
+import webbrowser
 
 
 def scanner():
@@ -24,22 +25,49 @@ def scanner():
 
             str = filename
             result = hashlib.md5(str.encode())
-            print (result.hexdigest())
+            print(result.hexdigest())
 
             # This dumps all of the info to ther terminal about the pe file
-            print (pe.dump_info())
+            print(pe.dump_info())
         except Exception:
             print("FAILED")
 
 
-def reporter(pe):
+def reporter(Q1):
     """
     The reporter function that will return a report including a reference to virus total via:
     https://www.virustotal.com/gui/search/{HASH}
     """
+    with open('report_template.html', 'r') as report_template:
+        data = report_template.read()
 
-    pass
+        # Inflate Q1
+        data = data.replace("[Q1]", Q1)
+
+        f = open("report.html", "w")
+        f.write(data)
+        f.close()
+
+    webbrowser.open_new_tab('report.html')
 
 
-# C:\Program Files (x86)\Steam\steamapps\common\Star Wars Empire at War\corruption\
-scanner()
+class PE_File(object):
+    md5_hash = ""
+    compile_date = ""
+    obfuscation = ""
+    imports = ""
+    host_indicators = ""
+    network_indicators = ""
+    purpose = ""
+
+    def __init__(self, md5_hash, compile_date, obfuscation, imports, host_indicators, network_indicators, purpose):
+        md5_hash = self.md5_hash
+        compile_date = self.compile_date
+        obfuscation = self.obfuscation
+        imports = self.imports
+        host_indicators = self.host_indicators
+        network_indicators = self.network_indicators
+        purpose = self.purpose
+
+
+reporter("Q1")
