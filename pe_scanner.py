@@ -1,7 +1,7 @@
 """
 pe_scanner
 Description: A basic python script to scan through a directory of files and create a report of all those files
-Author: Winston Howard
+Author: Alice Blair, Winston Howard, Chance Sweetser
 Created Date: 02/18/20
 """
 import subprocess
