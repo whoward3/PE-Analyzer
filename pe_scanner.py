@@ -9,6 +9,8 @@ import pefile
 import peutils
 import os
 import webbrowser
+import re
+import hashlib
 
 
 def scanner():
@@ -16,21 +18,27 @@ def scanner():
     The scanner function used to scan directory of files
     """
     path = input('Path to PE File Directory: ')
-    print(path)
     for filename in os.listdir(path):
-        print("\n {} : \r".format(filename))
-        try:
-            # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
-            # I tried encoding the pe variable but that did not work
+            print("\n {} : \r".format(filename))
+            try:
+                pe = pefile.PE(path+filename)
+                print("PASS\n")
 
-            str = filename
-            result = hashlib.md5(str.encode())
-            print(result.hexdigest())
+                # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
+                # I tried encoding the pe variable but that did not work
 
-            # This dumps all of the info to ther terminal about the pe file
-            print(pe.dump_info())
-        except Exception:
-            print("FAILED")
+                str = filename
+                result = hashlib.md5(str.encode())
+                print(result.hexdigest())
+
+                # This dumps all of the info to ther terminal about the pe file
+                # print (pe.dump_info())
+                info = pe.dump_info()
+                m = re.findall(
+                    '(?<=DllCharacteristics: )[A-Za-z_,]+\t*.[^0x\n]*', info)
+                print(m[0])
+            except Exception:
+                print("FAILED")
 
 
 def reporter(Q1):
