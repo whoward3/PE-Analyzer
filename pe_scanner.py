@@ -20,7 +20,7 @@ def scanner():
     path = input('Path to PE File Directory: ')
     for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
-        listOfFiles = []
+        file_list = []
         try:
             pe = pefile.PE(path+filename)
             print("PASS\n")
@@ -28,36 +28,35 @@ def scanner():
             # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
             # I tried encoding the pe variable but that did not work
 
-            str = filename
-            result = hashlib.md5(str.encode())
-            print(result.hexdigest())
+            f_hash = hashlib.md5(filename.encode())
+            # print(result.hexdigest())
 
             info = pe.dump_info()
             # print(info) #DUMPS ALL INFO
 
             dll_grabber = re.findall('[A-Za-z0-9]*.dll[\.A-Za-z0-9]*', info)
             # this is all of the referernces to dll in a pe file
-            print(dll_grabber)
+            # print(dll_grabber)
 
             number = len(dll_grabber)
             packed = ""  # This will be for if it is packed
             if (number < 10):
-                packed = "Is Packed"
+                packed = "It is packed and obfuscated."
             else:
-                packed = "Is not Packed"
+                packed = "It is not obfuscated or packed."
 
             dll_characteristics = re.findall(
                 '(?<=DllCharacteristics: )[A-Za-z_,]+\t*.[^0x\n]*', info)
             # This is the DLL Charcteristics for num 5
-            print(dll_characteristics[0])
+            # print(dll_characteristics[0])
 
             date = re.findall(
                 '(?<=TimeDateStamp:                 ............)[A-Za-z0-9: ]*', info)
-            print(date[0])  # This is the compile time
+            # print(date[0])  # This is the compile time
 
-            file = PE_File(result, date, packed, dll_grabber,
-                           dll_characteristics, "IDC")
-            listOfFiles.append(file)
+            file = PE_File(str(f_hash), str(date), str(packed), str(dll_grabber),
+                           str(dll_characteristics), "NETWORK STUB", filename)
+            file_list.append(file)
         except Exception:
             print("FAILED")
 
@@ -99,6 +98,7 @@ def reporter(fileList):
             # Q6
             data = data.replace("[Q6]", f.network_indicators)
             file_section = file_section + "\n" + data
+
         report = html_template.replace("[FILE SECTION]", file_section)
 
         f = open("report.html", "w")
