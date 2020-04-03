@@ -16,8 +16,8 @@ def scanner():
     """
     The scanner function used to scan directory of files
     """
-       path = input('Path to PE File Directory: ')
-       for filename in os.listdir(path):
+    path = input('Path to PE File Directory: ')
+    for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
         try:
             pe = pefile.PE(path+filename)
