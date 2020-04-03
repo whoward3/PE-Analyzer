@@ -54,13 +54,16 @@ def scanner():
                 '(?<=TimeDateStamp:                 ............)[A-Za-z0-9: ]*', info)
             # print(date[0])  # This is the compile time
 
-            file = PE_File(str(f_hash), str(date), str(packed), str(dll_grabber),
+            pe_file = PE_File(str(f_hash), str(date), packed, str(dll_grabber),
                            str(dll_characteristics), "NETWORK STUB", filename)
-            file_list.append(file)
+
+            test1 = PE_File("1", "2", "3", "4", "5", "6", "7")
+
+            file_list.append(pe_file)
         except Exception:
             print("FAILED")
 
-   # reporter(listOfFiles)
+    reporter(file_list)
 
 
 def reporter(fileList):
