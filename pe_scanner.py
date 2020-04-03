@@ -64,7 +64,7 @@ def scanner():
    # reporter(listOfFiles)
 
 
-def reporter(pe):
+def reporter(fileList):
     """
     The reporter function that will return a report including a reference to virus total via:
     https://www.virustotal.com/gui/search/{HASH}
