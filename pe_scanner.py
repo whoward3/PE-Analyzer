@@ -18,9 +18,15 @@ def scanner():
     for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
         try:
-            pe = pefile.PE(path+filename)
-            print("PASS\n")
-            print(pe)
+            # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
+            # I tried encoding the pe variable but that did not work
+
+            str = filename
+            result = hashlib.md5(str.encode())
+            print (result.hexdigest())
+
+            # This dumps all of the info to ther terminal about the pe file
+            print (pe.dump_info())
         except Exception:
             print("FAILED")
 
