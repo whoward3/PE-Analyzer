@@ -78,31 +78,36 @@ def reporter(fileList):
         html_section = report_section.read()
 
         file_section = ""
-        for f in fileList:
+        for f in file_list:
             data = html_section
-            data = data.replace("[FILE NAME]", f.name)
+            data = data.replace("[FILE NAME]", f._name)
 
             # Q1
-            uri = "https://www.virustotal.com/gui/search/"+f.md5_hash
+            uri = "https://www.virustotal.com/gui/search/"+f._md5_hash
             data = data.replace("[Q1]", uri)
 
             # Q2
-            data = data.replace("[Q2]", f.compile_date)
+            data = data.replace("[Q2]", f._compile_date)
 
             # Q3
-            data = data.replace("[Q3]", f.obfuscation)
+            data = data.replace("[Q3]", f._obfuscation)
 
             # Q4
-            data = data.replace("[Q4]", f.imports)
+            data = data.replace("[Q4]", f._imports)
 
             # Q5
-            data = data.replace("[Q5]", f.host_indicators)
+            data = data.replace("[Q5]", f._host_indicators)
 
             # Q6
-            data = data.replace("[Q6]", f.network_indicators)
+            data = data.replace("[Q6]", f._network_indicators)
             file_section = file_section + "\n" + data
 
-        report = html_template.replace("[FILE SECTION]", file_section)
+        if(file_section == ""):
+            file_section = """<p>PE Analyser found no valid PE files to scan. Please ensure you provide PE Analyser a path to a directory not a path to a specific file
+             and that the PE files in the specified directory are compatabile with Pefile by Ero Carrera.</p>"""
+
+        report = html_template.replace("[FILES SECTION]", file_section)
+        report = html_template.replace("[FILES]", str(len(file_list)))
 
         f = open("report.html", "w")
         f.write(report)
@@ -112,22 +117,22 @@ def reporter(fileList):
 
 
 class PE_File(object):
-    md5_hash = ""
-    compile_date = ""
-    obfuscation = ""
-    imports = ""
-    host_indicators = ""
-    network_indicators = ""
-    name = ""
+    _md5_hash = ""
+    _compile_date = ""
+    _obfuscation = ""
+    _imports = ""
+    _host_indicators = ""
+    _network_indicators = ""
+    _name = ""
 
     def __init__(self, md5_hash, compile_date, obfuscation, imports, host_indicators, network_indicators, name):
-        md5_hash = self.md5_hash
-        compile_date = self.compile_date
-        obfuscation = self.obfuscation
-        imports = self.imports
-        host_indicators = self.host_indicators
-        network_indicators = self.network_indicators
-        name = self.name
+        _md5_hash = self.md5_hash
+        _compile_date = self.compile_date
+        _obfuscation = self.obfuscation
+        _imports = self.imports
+        _host_indicators = self.host_indicators
+        _network_indicators = self.network_indicators
+        _name = self.name
 
 
 scanner()
