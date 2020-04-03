@@ -8,6 +8,8 @@ import subprocess
 import pefile
 import peutils
 import os
+import re
+import hashlib
 
 
 def scanner():
@@ -15,7 +17,7 @@ def scanner():
     The scanner function used to scan directory of files
     """
        path = input('Path to PE File Directory: ')
-        for filename in os.listdir(path):
+       for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
         try:
             pe = pefile.PE(path+filename)
