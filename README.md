@@ -6,7 +6,8 @@ imports, host indicators, and network indicators.
 
 
 Sample Usages:
-
-
+![Example Report](Example Report.png)
+![Executing Report](Executing Report.png)
+![Sample Report](Sample Report.png)
 
 
