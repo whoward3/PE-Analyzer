@@ -46,7 +46,10 @@ def scanner():
             print("PASS\n")
 
             # Get md5 hash
-            file_hash = hashlib.md5(filename.encode()).hexdigest()
+            file_obj = open(os.path.join(path, filename), 'rb')
+            file_data = file_obj.read()
+            hash_obj = hashlib.md5(file_data)
+            file_hash = hash_obj.hexdigest()
 
             # Get the PE Data
             pe_data = pe.dump_info()
