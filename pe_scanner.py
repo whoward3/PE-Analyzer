@@ -12,15 +12,32 @@ import webbrowser
 import re
 import hashlib
 
+class PE_File(object):
+    _md5_hash = ""
+    _compile_date = ""
+    _obfuscation = ""
+    _imports = ""
+    _host_indicators = ""
+    _network_indicators = ""
+    _name = ""
+
+    def __init__(self, md5_hash, compile_date, obfuscation, imports, host_indicators, network_indicators, name):
+        self._md5_hash = md5_hash
+        self._compile_date = compile_date
+        self._obfuscation = obfuscation
+        self._imports = imports
+        self._host_indicators = host_indicators
+        self._network_indicators = network_indicators
+        self._name = name
 
 def scanner():
     """
     The scanner function used to scan directory of files
     """
     path = input('Path to PE File Directory: ')
+    file_list = []
     for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
-        file_list = []
         try:
             pe = pefile.PE(path+filename)
             print("PASS\n")
@@ -28,7 +45,7 @@ def scanner():
             # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
             # I tried encoding the pe variable but that did not work
 
-            f_hash = hashlib.md5(filename.encode())
+            f_hash = hashlib.md5(filename.encode()).hexdigest()
             # print(result.hexdigest())
 
             info = pe.dump_info()
@@ -54,16 +71,18 @@ def scanner():
                 '(?<=TimeDateStamp:                 ............)[A-Za-z0-9: ]*', info)
             # print(date[0])  # This is the compile time
 
-            file = PE_File(str(f_hash), str(date), str(packed), str(dll_grabber),
+            pe_file = PE_File(str(f_hash), str(date[0]), packed, str(dll_grabber),
                            str(dll_characteristics), "NETWORK STUB", filename)
-            file_list.append(file)
+
+
+            file_list.append(pe_file)
         except Exception:
             print("FAILED")
 
-   # reporter(listOfFiles)
+    reporter(file_list)
 
 
-def reporter(fileList):
+def reporter(file_list):
     """
     The reporter function that will return a report including a reference to virus total via:
     https://www.virustotal.com/gui/search/{HASH}
@@ -104,32 +123,13 @@ def reporter(fileList):
                            and that the PE files in the specified directory are compatabile with Pefile by Ero Carrera.</p>"""
 
         report = html_template.replace("[FILES SECTION]", file_section)
-        report = html_template.replace("[FILES]", str(len(file_list)))
+        report = report.replace("[FILES]", str(len(file_list)))
 
         f = open("report.html", "w")
         f.write(report)
         f.close()
 
     webbrowser.open_new_tab('report.html')
-
-
-class PE_File(object):
-    _md5_hash = ""
-    _compile_date = ""
-    _obfuscation = ""
-    _imports = ""
-    _host_indicators = ""
-    _network_indicators = ""
-    _name = ""
-
-    def __init__(self, md5_hash, compile_date, obfuscation, imports, host_indicators, network_indicators, name):
-        _md5_hash = self.md5_hash
-        _compile_date = self.compile_date
-        _obfuscation = self.obfuscation
-        _imports = self.imports
-        _host_indicators = self.host_indicators
-        _network_indicators = self.network_indicators
-        _name = self.name
 
 
 scanner()
