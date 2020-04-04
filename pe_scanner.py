@@ -87,7 +87,7 @@ def scanner():
                     "PE Analyser was unable to find any host indicators.")
             if(not file_network_indicators):
                 file_network_indicators.append(
-                    "PE Analyser was unable to find any network indicators.")
+                    "PE Analyser was unable to find any IPv4 based network indicators.")
 
             pe_file = PE_File(str(file_hash), str(file_compile_date[0]), file_obfuscation, str(file_imports),
                               str(file_host_indicators), str(file_network_indicators), filename)
