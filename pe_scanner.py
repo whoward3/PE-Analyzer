@@ -76,7 +76,8 @@ def scanner():
             # print(date[0])  # This is the compile time
 
             network = re.findall('(?<![-\.\d])(?:0{0,2}?[0-9]\.|1\d?\d?\.|2[0-5]?[0-5]?\.){3}(?:0{0,2}?[0-9]|1\d?\d?|2[0-5]?[0-5]?)(?![\.\d])', info)
-
+            #ipv4
+            
             pe_file = PE_File(str(f_hash), str(date[0]), packed, str(dll_grabber),
                            str(dll_characteristics), str(network), filename)
 
