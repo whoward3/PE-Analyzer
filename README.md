@@ -6,8 +6,8 @@ imports, host indicators, and network indicators.
 
 
 Sample Usages:
-![Example Report](/Assets/ExampleReport.png)
-![Executing Report](/Assets/ExecutingReport.png)
-![Sample Report](/Assets/SampleReport.png)
+![Example Report](https://github.com/whoward3/PE-Analyzer/tree/master/Assets/ExampleReport.PNG)
+![Executing Report](https://github.com/whoward3/PE-Analyzer/tree/master/Assets/ExecutingReport.PNG)
+![Sample Report](https://github.com/whoward3/PE-Analyzer/tree/master/Assets/SampleReport.PNG)
 
 
