@@ -45,7 +45,11 @@ def scanner():
             # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
             # I tried encoding the pe variable but that did not work
 
-            f_hash = hashlib.md5(filename.encode()).hexdigest()
+            file_obj = open(os.path.join(path, filename), 'rb')
+            print (file_obj)
+            data = file_obj.read()
+            noGod = hashlib.md5(data)
+            f_hash =  noGod.hexdigest()
             # print(result.hexdigest())
 
             info = pe.dump_info()
