@@ -12,6 +12,7 @@ import webbrowser
 import re
 import hashlib
 
+
 class PE_File(object):
     _md5_hash = ""
     _compile_date = ""
@@ -30,52 +31,63 @@ class PE_File(object):
         self._network_indicators = network_indicators
         self._name = name
 
+
 def scanner():
     """
     The scanner function used to scan directory of files
     """
     path = input('Path to PE File Directory: ')
     file_list = []
+    print("Log: ")
     for filename in os.listdir(path):
         print("\n {} : \r".format(filename))
         try:
             pe = pefile.PE(path+filename)
             print("PASS\n")
 
-            # This hashes stuff, but I am not sure what actually needs to get hashed inorder to get the desired hash
-            # I tried encoding the pe variable but that did not work
+            # Get md5 hash
+            file_hash = hashlib.md5(filename.encode()).hexdigest()
 
-            f_hash = hashlib.md5(filename.encode()).hexdigest()
-            # print(result.hexdigest())
+            # Get the PE Data
+            pe_data = pe.dump_info()
 
-            info = pe.dump_info()
-            # print(info) #DUMPS ALL INFO
+            # Get Imports
+            file_imports = re.findall(
+                '[A-Za-z0-9]*.dll[\.A-Za-z0-9]*', pe_data)
 
-            dll_grabber = re.findall('[A-Za-z0-9]*.dll[\.A-Za-z0-9]*', info)
-            # this is all of the referernces to dll in a pe file
-            # print(dll_grabber)
-
-            number = len(dll_grabber)
-            packed = ""  # This will be for if it is packed
-            if (number < 10):
-                packed = "It is packed and obfuscated."
+            # Get Obfuscation
+            if (len(file_imports) < 10):
+                file_obfuscation = "It is packed and obfuscated."
             else:
-                packed = "It is not obfuscated or packed."
+                file_obfuscation = "It is not obfuscated or packed."
 
-            dll_characteristics = re.findall(
-                '(?<=DllCharacteristics: )[A-Za-z_,]+\t*.[^0x\n]*', info)
-            # This is the DLL Charcteristics for num 5
-            # print(dll_characteristics[0])
+            # Get Host Indicators
+            file_host_indicators = re.findall(
+                '(?<=DllCharacteristics: )[A-Za-z_,]+\t*.[^0x\n]*', pe_data)
 
-            date = re.findall(
-                '(?<=TimeDateStamp:                 ............)[A-Za-z0-9: ]*', info)
-            # print(date[0])  # This is the compile time
+            # Get Compile Date
+            file_compile_date = re.findall(
+                '(?<=TimeDateStamp:                 ............)[A-Za-z0-9: ]*', pe_data)
 
-            network = re.findall('(?<![-\.\d])(?:0{0,2}?[0-9]\.|1\d?\d?\.|2[0-5]?[0-5]?\.){3}(?:0{0,2}?[0-9]|1\d?\d?|2[0-5]?[0-5]?)(?![\.\d])', info)
+            # Get Network Indicators
+            file_network_indicators = re.findall(
+                '(?<![-\.\d])(?:0{0,2}?[0-9]\.|1\d?\d?\.|2[0-5]?[0-5]?\.){3}(?:0{0,2}?[0-9]|1\d?\d?|2[0-5]?[0-5]?)(?![\.\d])', pe_data)
 
-            pe_file = PE_File(str(f_hash), str(date[0]), packed, str(dll_grabber),
-                           str(dll_characteristics), str(network), filename)
+            # Edge Cases
+            if(not file_compile_date):
+                file_compile_date.append("The compiled date is unknown.")
+            if(not file_imports):
+                file_imports.append(
+                    "PE Analyser was unable to find any imports.")
+            if(not file_host_indicators):
+                file_host_indicators.append(
+                    "PE Analyser was unable to find any host indicators.")
+            if(not file_network_indicators):
+                file_network_indicators.append(
+                    "PE Analyser was unable to find any network indicators.")
 
+            pe_file = PE_File(str(file_hash), str(file_compile_date[0]), file_obfuscation, str(file_imports),
+                              str(file_host_indicators), str(file_network_indicators), filename)
 
             file_list.append(pe_file)
         except Exception:
@@ -121,7 +133,7 @@ def reporter(file_list):
             file_section = file_section + "\n" + data
 
         if(file_section == ""):
-         file_section = """<p>PE Analyser found no valid PE files to scan. Please ensure you provide PE Analyser a path to a directory not a path to a specific file
+            file_section = """<p>PE Analyser found no valid PE files to scan. Please ensure you provide PE Analyser a path to a directory not a path to a specific file
                            and that the PE files in the specified directory are compatabile with Pefile by Ero Carrera.</p>"""
 
         report = html_template.replace("[FILES SECTION]", file_section)
