@@ -121,8 +121,8 @@ def reporter(file_list):
             file_section = file_section + "\n" + data
 
         if(file_section == ""):
-            file_section = """<p>PE Analyser found no valid PE files to scan. Please ensure you provide PE Analyser a path to a directory not a path to a specific file
-             and that the PE files in the specified directory are compatabile with Pefile by Ero Carrera.</p>"""
+         file_section = """<p>PE Analyser found no valid PE files to scan. Please ensure you provide PE Analyser a path to a directory not a path to a specific file
+                           and that the PE files in the specified directory are compatabile with Pefile by Ero Carrera.</p>"""
 
         report = html_template.replace("[FILES SECTION]", file_section)
         report = report.replace("[FILES]", str(len(file_list)))
